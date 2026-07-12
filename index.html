@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/x-icon" href="google.jpg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - Classroom</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+</head>
+<body>
+  <div id="app" class="dark">
+    <aside class="sidebar">
+      <div class="user-profile-card">
+        <div class="avatar-container">
+          <img id="userAvatar" class="avatar hidden" src="" alt="Avatar">
+          <input type="file" id="avatarFileInput" accept="image/*" class="hidden">
+          <button id="changeAvatarBtn" class="hidden">✎</button>
+        </div>
+        <span id="userInfo" class="user-name"></span>
+        <button id="loginBtn" class="btn btn-primary">Sign In</button>
+        <button id="logoutBtn" class="btn btn-danger hidden">Sign Out</button>
+      </div>
+
+      <div class="scroller-section">
+        <div class="section-title">
+          <span>Public Rooms</span>
+          <button id="newRoomBtn" title="Create Room">+</button>
+        </div>
+        <div id="roomsList" class="list-container"></div>
+
+        <div class="section-title">
+          <span>Private Custom Groups</span>
+          <button id="newGroupBtn" title="Create Private Group">+</button>
+        </div>
+        <div class="section-title">
+          <span>Direct Messages</span>
+        </div>
+        <div id="usersList" class="list-container"></div>
+      </div>
+
+      <button id="themeToggle" class="theme-toggle-btn">🌙</button>
+    </aside>
+
+    <main class="chat-viewport">
+      <header class="chat-header">
+        <div class="header-room-details">
+          <h2 id="currentRoomName">Select a room</h2>
+          <div id="dmTargetBanner" class="dm-banner hidden">
+            <span></span>
+            <button id="clearDmBtn" title="Back to Room Focus">✕</button>
+          </div>
+        </div>
+
+        <div class="header-call-controls">
+          <button id="videoCallBtn" class="call-action-btn" disabled>🎥</button>
+          <button id="voiceCallBtn" class="call-action-btn" disabled>🎤</button>
+          <button id="screenShareBtn" class="call-action-btn" disabled>🖥️</button>
+        </div>
+      </header>
+
+      <section id="callArea" class="call-interface-overlay hidden">
+        <div class="video-grid">
+          <div class="video-window">
+            <video id="myVideo" autoplay muted playsinline></video>
+            <span class="video-label">You</span>
+          </div>
+          <div class="video-window">
+            <video id="theirVideo" autoplay playsinline></video>
+            <span id="remoteLabel" class="video-label">Remote Stream</span>
+          </div>
+        </div>
+        <div class="call-toolbar">
+          <button id="endCallBtn" class="btn btn-danger btn-circle" title="End Stream Session">⏹</button>
+        </div>
+      </section>
+
+      <section id="messages" class="messages-container"></section>
+      <div id="typingIndicator" class="typing-indicator-node"></div>
+
+      <footer class="chat-footer-input">
+        <div class="input-actions-wrapper">
+          <button id="emojiBtn" class="input-util-btn">😊</button>
+          <button id="screenShareBtnFooter" class="input-util-btn" title="Share Screen">🖥️</button>
+          <div id="emojiPicker" class="emoji-tray-popover hidden">
+            <span>😀</span><span>😂</span><span>😍</span><span>😎</span><span>🔥</span><span>🙏</span>
+          </div>
+          <button id="voiceRecordBtn" class="input-util-btn" title="Record Voice Message" disabled>🎙️</button>
+          <textarea id="msgInput" placeholder="Sign in to join the conversation..." disabled></textarea>
+          <button id="sendBtn" class="btn btn-primary" disabled>Send</button>
+        </div>
+      </footer>
+    </main>
+
+    <div id="groupModal" class="modal-backdrop hidden">
+      <div class="modal-box">
+        <h3>Create Private Multi-User Group</h3>
+        <input type="text" id="groupNameInput" placeholder="Enter group name...">
+        <p class="checkbox-legend">Select Members to add:</p>
+        <div id="groupMembersChecklist" class="checklist-box"></div>
+        <div class="modal-actions">
+          <button id="closeGroupModalBtn" class="btn btn-secondary">Cancel</button>
+          <button id="submitGroupBtn" class="btn btn-primary">Create Group</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="authModal" class="modal-backdrop hidden">
+      <div class="modal-box auth-box">
+        <div class="auth-tabs">
+          <button id="tabLogin" class="auth-tab active">Log In</button>
+          <button id="tabSignup" class="auth-tab">Sign Up</button>
+        </div>
+        <p id="authError" class="auth-error-msg hidden"></p>
+        <div id="loginForm" class="auth-form active">
+          <input type="email" id="loginEmail" placeholder="Email Address">
+          <input type="password" id="loginPassword" placeholder="Password">
+          <button id="loginEmailBtn" class="btn btn-primary full-width">Sign In</button>
+        </div>
+        <div id="signupForm" class="auth-form">
+          <input type="email" id="signupEmail" placeholder="Email Address">
+          <input type="password" id="signupPassword" placeholder="Choose Password">
+          <button id="signupEmailBtn" class="btn btn-primary full-width">Register Account</button>
+        </div>
+        <div class="auth-divider"><span>OR</span></div>
+        <button id="googleLoginBtn" class="btn btn-google full-width">🌐 Continue with Google</button>
+        <button id="closeModalBtn" class="btn btn-secondary full-width margin-top">Close Window</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
